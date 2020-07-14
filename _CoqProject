@@ -1,0 +1,16 @@
+-Q theories/ Rattus
+theories/Tactics.v
+theories/Heaps.v
+theories/Worlds.v
+theories/RawSyntax.v
+theories/Substitutions.v
+theories/Typing.v
+theories/ClosedTerms.v
+theories/TypingClosed.v
+theories/Reduction.v
+theories/LogicalRelation.v
+theories/LogicalRelationAux.v
+theories/FundamentalProperty.v
+theories/Streams.v
+theories/Productivity.v
+theories/Causality.v
