@@ -37,6 +37,7 @@ Inductive term :  Type :=
 | natlit  : nat -> term
 | add     : term -> term -> term
 | abs     : term -> term
+| letin   : term -> term -> term
 | app     : term -> term -> term 
 | pair    : term -> term -> term
 | pr1     : term -> term

@@ -40,6 +40,7 @@ Fixpoint sub_app (g : sub) (t : term) : term :=
                 | None => var j
                 end
   | abs t'   => abs (sub_app (None::g) t')
+  | letin t1 t2 => letin (sub_app g t1) (sub_app (None::g) t2)
   | app t1 t2 => app (sub_app g t1) (sub_app g t2)
   | pair t1 t2 => pair (sub_app g t1) (sub_app g t2)
   | pr1 t'=> pr1 (sub_app g t')

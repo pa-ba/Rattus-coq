@@ -95,6 +95,12 @@ Proof.
   intros W. dependent induction W; simpl;eauto. destruct (stableb T);eauto.
 Qed.
 
+Lemma sub_sub_stabilize_later (G : ctx later) g g' : sub_sub g G g' ->  sub_sub g (stabilize_later G) g'.
+Proof.
+  intros W. dependent induction W; simpl;eauto using sub_sub_stabilize. 
+Qed.
+
+
 Lemma skip_sub_app ty (G : ctx ty)  g g' t T :
   G ⊢ t ∶ T -> sub_sub g G g' ->
   sub_app g' t = sub_app g t.
@@ -102,7 +108,7 @@ Proof.
   intros J SS.
   generalize dependent g. generalize dependent g'. 
   induction J;intros;simpl;
-    try solve [auto|erewrite IHJ; eauto using sub_sub_skip_later,sub_sub_stabilize
+    try solve [auto|erewrite IHJ; eauto using sub_sub_skip_later,sub_sub_stabilize, sub_sub_stabilize_later
                |erewrite IHJ1, IHJ2; eauto|erewrite IHJ1, IHJ2, IHJ3; eauto].
   - unfold sub_lookup. assert (nth_error g x = nth_error g' x) as P.
     generalize dependent x.
@@ -171,6 +177,7 @@ Inductive svars (s : index) : index -> term -> Prop :=
 | svars_natlit b n : svars s b (natlit n)
 | svars_add b t1 t2 : svars s b t1 -> svars s b t2 -> svars s b (add t1 t2)
 | svars_abs b t : svars s (S b) t -> svars s b (abs t)
+| svars_letin b t1 t2 : svars s b t1 -> svars s (S b) t2 -> svars s b (letin t1 t2)
 | svars_app b t1 t2 : svars s b t1 -> svars s b t2 -> svars s b (app t1 t2)
 | svars_pair b t1 t2 : svars s b t1 -> svars s b t2 -> svars s b (pair t1 t2)
 | svars_pr1 b t : svars s b t -> svars s b (pr1 t)
@@ -200,6 +207,7 @@ Proof.
   - simpl. repeat rewrite sub_lookup_skip_above by omega. auto.
   - simpl. repeat rewrite sub_lookup_skip_below by omega. auto.
   - simpl. pose (IHSV (None :: g)) as IH. simpl in IH. rewrite IH. reflexivity.
+  - simpl. pose (IHSV2 (None :: g)) as IH2. simpl in IH2. rewrite IH2. rewrite IHSV1. reflexivity.
   - pose (IHSV2 (None :: g)) as IH2. pose (IHSV3 (None :: g)) as IH3.
     simpl in IH2, IH3. simpl. rewrite IHSV1, IH2, IH3. reflexivity.
   - simpl. pose (IHSV (None :: g)) as IH. simpl in IH. rewrite IH. reflexivity.
@@ -266,11 +274,16 @@ Proof.
   - destruct (stableb A); eauto.
 Qed.
 
+Lemma ctx_skips_stabilize_later s b (G : ctx later) :  ctx_skips s b G -> ctx_skips s b (stabilize_later G).
+Proof.
+  intros SK. dependent induction SK;simpl;eauto using ctx_skips_stabilize.
+Qed.
+
 Lemma typing_svars ty (G : ctx ty) s b t A : ctx_skips s b G -> G ⊢ t ∶ A -> svars s b t.
 Proof.
   intros SK T. generalize dependent b.
   induction T;intros;
-    try solve[constructor;eauto using ctx_skips_later,ctx_skips_stabilize].
+    try solve[constructor;eauto using ctx_skips_later,ctx_skips_stabilize,ctx_skips_stabilize_later].
   - eapply ctx_lookup_skips in H;eauto. destruct H;auto.
 Qed.
 
@@ -369,6 +382,12 @@ Proof.
   intros GS. induction GS; simpl; auto; destruct (stableb A);simpl;auto.
 Qed.
 
+Lemma ground_sub_stabilize_later b g (G : ctx later) : ground_sub b g G -> ground_sub b g (stabilize_later G).
+Proof.
+  intros GS. dependent induction GS; simpl; auto using ground_sub_stabilize.
+Qed.
+
+
 Lemma ground_sub_closed ty g (G : ctx ty) A t b :
       G ⊢ t ∶ A -> closed_sub g -> ground_sub b g G -> fvars b (sub_app g t).
 Proof.
@@ -381,7 +400,8 @@ Proof.
       eauto.
     + destruct H0. rewrite H0. eauto using sub_lookup_closed, closed_fvars.
      
-
+  - constructor. apply IHT;eauto using ground_sub_stabilize_later.
+  - constructor. apply IHT1;eauto. apply IHT2;eauto.
   - constructor. apply IHT1;eauto. apply IHT2;eauto. apply IHT3;eauto.
   - constructor. apply IHT;eauto using ground_sub_stabilize.
 Qed.

@@ -46,6 +46,10 @@ Inductive red : term -> store -> term -> store -> Prop :=
     {t',h'} ⇓ {v,h''} ->
     {sub_term t'' v,h''} ⇓ {v',h'''} ->
     {app t t',h} ⇓ {v',h'''}
+| red_letin t t' v v' h h' h'' :
+    {t,h} ⇓ {v,h'} ->
+    {sub_term t' v,h'} ⇓ {v',h''} ->
+    {letin t t',h} ⇓ {v',h''}
 | red_delay t h h' :
     {delay t, (h', h) } ⇓ {ref (alloc_fresh h), (h', heap_cons h (alloc_fresh h) t)}
 | red_adv t t' v l hn he he' h:
@@ -129,6 +133,10 @@ Proof.
     apply IHR3 in IH2C;auto.
     dependent destruction IH1F.
     apply sub_term_closed;auto.
+  - dependent destruction C.
+    apply IHR1 in C1;auto.
+    destruct C1 as [IH1F IH1C].
+    apply IHR2;auto using sub_term_closed.
   - (* delay *)
     split. auto. dependent destruction C.
     dependent destruction CS;constructor;eauto using closed_heap_alloc.
@@ -209,7 +217,9 @@ Proof.
       apply IHR1_2 in R2_2. autodest. 
   - dependent destruction R2; inv_value.
     apply IHR1_1 in R2_1. autodest. inversion H. subst.
-    apply IHR1_2 in R2_2. autodest. 
+    apply IHR1_2 in R2_2. autodest.
+  - dependent destruction R2; inv_value.
+    apply IHR1_1 in R2_1. autodest. 
   - dependent destruction R2; inv_value. auto.
   - dependent destruction R2; inv_value.
     apply IHR1_1 in R2_1. autodest. inversion H1. inversion H2. subst.

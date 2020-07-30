@@ -254,6 +254,15 @@ Proof.
   - eapply crel_mono in IHC; eauto.
 Qed.
 
+Lemma crel_stabilize_later nu g (G : ctx later) Hs s:
+  closed_heapseq Hs -> closed_store s ->  crel nu G Hs s g -> 
+  crel nu (stabilize_later G) Hs s (sub_skipc (stabilize_later G) g).
+Proof.
+  intros CH CS C. dependent induction C;simpl;eauto.
+  eauto using crel_stabilize, crel_mono.
+Qed.
+
+
 Lemma crel_ground nu ty (G : ctx ty) Hs s g : crel nu G Hs s g -> ground_sub 0 g G.
 Proof.
   intros CR. induction CR; eauto.

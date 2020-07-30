@@ -25,6 +25,7 @@ Inductive fvars : index -> term -> Prop :=
 | fvars_natlit b n : fvars b (natlit n)
 | fvars_add b t1 t2 : fvars b t1 -> fvars b t2 -> fvars b (add t1 t2)                           
 | fvars_abs b t : fvars (S b) t -> fvars b (abs t)
+| fvars_letin b t1 t2 : fvars b t1 ->fvars (S b) t2 -> fvars b (letin t1 t2)                                         
 | fvars_app b t1 t2 : fvars b t1 -> fvars b t2 -> fvars b (app t1 t2)
 | fvars_pair b t1 t2 : fvars b t1 -> fvars b t2 -> fvars b (pair t1 t2)
 | fvars_pr1 b t : fvars b t -> fvars b (pr1 t)
@@ -169,6 +170,7 @@ Proof.
   intros I F. generalize dependent j. induction F;intros j;eauto.
   - constructor. omega.
   - constructor. apply IHF. omega.
+  - constructor. apply IHF1. omega. apply IHF2. omega.
   - constructor. apply IHF1. omega. apply IHF2. omega. apply IHF3. omega.
   - constructor. apply IHF. omega.
 Qed.
@@ -206,6 +208,7 @@ Inductive bvars : index -> index -> index -> term -> Prop :=
 | bvars_natlit l b s n : bvars l s b (natlit n)
 | bvars_add l s b t1 t2 : bvars l s b t1 -> bvars l s b t2 -> bvars l s b (add t1 t2)
 | bvars_abs l s b t : bvars (S l) s (S b) t -> bvars l s b (abs t)
+| bvars_letin l s b t1 t2 : bvars l s b t1 -> bvars (S l) s (S b) t2 -> bvars l s b (letin t1 t2)
 | bvars_app l s b t1 t2 : bvars l s b t1 -> bvars l s b t2 -> bvars l s b (app t1 t2)
 | bvars_pair l s b t1 t2 : bvars l s b t1 -> bvars l s b t2 -> bvars l s b (pair t1 t2)
 | bvars_pr1 l b s t : bvars l s b t -> bvars l s b (pr1 t)
@@ -265,6 +268,7 @@ Proof.
     + apply bvars_var_between. omega.
     + apply bvars_var_below. omega.
   - constructor. apply IHF. omega.
+  - constructor. apply IHF1. auto. apply IHF2. omega. 
   - constructor. apply IHF1. auto. apply IHF2. omega. apply IHF3. omega.
   - constructor. apply IHF. omega.
 Qed.

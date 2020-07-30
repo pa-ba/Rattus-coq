@@ -120,6 +120,16 @@ Fixpoint stabilize {i} (G : ctx i) : ctx now :=
   end.
 
 
+Fixpoint stabilize_later (G : ctx later) : ctx now :=
+  match G with
+  | ctx_tick G' => stabilize G'
+  | @ctx_var later G' T => ctx_var (stabilize_later G') T
+  | @ctx_var now G' v => fun _ x => x
+  | @ctx_skip now G' => fun _ x => x
+  | @ctx_skip later G' => ctx_skip (stabilize_later G')
+  end.
+
+
 
 Inductive ctx_lookup : forall {ty} , ctx ty -> nat -> type -> Prop :=
 | ctx_zero ty (G : ctx ty)  T : ctx_lookup (ctx_var G T) 0 T
@@ -143,10 +153,17 @@ Inductive hastype : forall {ty}, ctx ty -> term -> type -> Prop :=
 | T_abs : forall (G : ctx now) t T1 T2,
     ctx_var G T1 ⊢ t ∶ T2 ->
     G ⊢ abs t ∶ (Arrow T1 T2)
+| T_abs_tick : forall (G : ctx later) t T1 T2,
+    ctx_var (stabilize_later G) T1 ⊢ t ∶ T2 ->
+    G ⊢ abs t ∶ (Arrow T1 T2)
 | T_app : forall ty (G : ctx ty) t1 t2 T1 T2,
     G ⊢ t1 ∶ (Arrow T1 T2) ->
     G ⊢ t2 ∶ T1 ->
     G ⊢ app t1 t2 ∶ T2
+| T_letin : forall ty (G : ctx ty) t1 t2 T1 T2,
+    G ⊢ t1 ∶ T1 ->
+    ctx_var G T1 ⊢ t2 ∶ T2 ->
+    G ⊢ letin t1 t2 ∶ T2
 | T_pair : forall ty (G : ctx ty) t1 t2 T1 T2,
     G ⊢ t1 ∶ T1 ->
     G ⊢ t2 ∶ T2 ->

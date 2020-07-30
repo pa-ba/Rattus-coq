@@ -41,12 +41,40 @@ Proof.
   - (* abs *)
     apply vrel_trel. simpl. autorewrite with vrel'.
     exists (sub_app (None :: g) t). split. reflexivity.
-    intros. rewrite sub_term_merge.
-    apply IHT. constructor. assumption.
+    intros. rewrite sub_term_merge by auto.
+    apply IHT;auto. constructor. assumption.
     apply crel_gc in C. eauto using crel_mono. 
-    auto. auto. auto. auto.
+  - (* abs with tick *)
+    simpl. rewrite <- sub_skipc_id with (G:=ctx_var (stabilize_later G) T1) (T:=T2) by auto.
+    apply vrel_trel. simpl. autorewrite with vrel'.
+    exists (sub_app (None :: sub_skipc (stabilize_later G) g) t). split. reflexivity.
+    intros. rewrite sub_term_merge by auto using sub_skipc_closed.
+    apply IHT; auto using sub_skipc_closed. constructor. assumption.
+    apply crel_stabilize_later in C;auto.
+    apply crel_gc in C.
+    eauto using crel_mono. 
   - (* app *)
     apply trel_app with (T1:=T1); eauto using crel_sub_closed.
+  - (* letin *)
+    
+    unfold trel in *. intros  s' TL CS'.
+    assert (exists (v : term) (s'' : store), {sub_app g t1, s'}⇓ {v, s''} /\ vrel nu T1 Hs s'' v)
+    as IH1 by (eapply IHT1;eauto).
+    destruct IH1 as (v & s''& [IH1s IH1v]).
+
+    assert (closed_store s'') as Cs''
+        by (eapply red_closed_store;try eapply IH1s;eauto using crel_sub_closed).
+    assert (closed_term v) as Cv
+        by (eapply red_closed_term;try eapply IH1s;eauto using crel_sub_closed).
+  
+    
+    assert (exists (v' : term) (s''' : store), {sub_app (Some v :: g) t2, s''}⇓ {v', s'''} /\ vrel nu T2 Hs s''' v')
+      as IH2 by (eapply IHT2 ;eauto using tick_le_trans, red_extensive; constructor; eauto using crel_mono,red_extensive).
+
+    destruct IH2 as (v' & s'''& [IH2s IH2v]).
+
+    eexists. eexists. split;try eassumption. simpl. eapply red_letin; try eassumption.
+    rewrite sub_term_merge by auto. assumption.
   - (* pair *)
     unfold trel in *. intros s' TL HCs.
    
