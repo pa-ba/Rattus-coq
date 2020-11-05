@@ -2,7 +2,7 @@
 
 From Rattus Require Export Substitutions.
 
-From Coq Require Import Omega Program.Equality NPeano.
+From Coq Require Import Lia Program.Equality NPeano.
 
 (* Definition of well-formed types *)
 Inductive wf_type : nat -> type -> Prop :=
@@ -48,9 +48,9 @@ Proof.
 
   induction C;intros;simpl;eauto;
     try solve[rewrite IHC1, IHC2;eauto|rewrite IHC;eauto].
-  - assert (i0 <> i) as I by omega. rewrite <- NPeano.Nat.eqb_neq in I.
+  - assert (i0 <> i) as I by lia. rewrite <- NPeano.Nat.eqb_neq in I.
     rewrite I. reflexivity.
-  - rewrite IHC. reflexivity. omega.
+  - rewrite IHC. reflexivity. lia.
 Qed.
 
 
@@ -186,8 +186,11 @@ Inductive hastype : forall {ty}, ctx ty -> term -> type -> Prop :=
     ctx_var G T2 ⊢ t2 ∶ T ->
     G ⊢ case t t1 t2 ∶ T
 (* Reactive expressions *)
-| T_delay : forall G T t,
+| T_delay : forall (G : ctx now) T t,
     ctx_tick G ⊢ t ∶ T ->
+    G  ⊢ delay t ∶ Delay T
+| T_delay_tick : forall (G : ctx later) T t,
+    ctx_tick (stabilize_later G) ⊢ t ∶ T ->
     G  ⊢ delay t ∶ Delay T
 | T_adv : forall G t T ,
     skip_later G ⊢ t ∶ Delay T ->
@@ -200,7 +203,7 @@ Inductive hastype : forall {ty}, ctx ty -> term -> type -> Prop :=
     G ⊢ unbox t ∶ T
 (* Temporal recursive expressions *)
 | T_fix : forall i (G : ctx i) t T,
-    (ctx_var (stabilize G) (Delay T)) ⊢ t ∶ T ->
+    (ctx_var (stabilize G) (Box (Delay T))) ⊢ t ∶ T ->
     G ⊢ fixp t ∶ T
 | T_into : forall ty (G : ctx ty) t T,
     G ⊢ t ∶ tsubst 0 T (Delay (Fix T)) ->

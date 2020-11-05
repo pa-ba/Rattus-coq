@@ -2,7 +2,7 @@ From Rattus Require Export Heaps ClosedTerms.
 
 From Rattus Require Import Tactics.
 
-From Coq Require Import Omega Program.Equality.
+From Coq Require Import Lia Program.Equality.
 
 From stdpp Require Import gmap fin_maps fin_sets.
 
@@ -292,8 +292,8 @@ Qed.
 Lemma length_skipn n A  : forall (Hs : list A), n <= length Hs -> length (skipn n Hs) = length Hs - n.
 Proof.
   induction n;intros.
-  - unfold skipn. simpl. zify;omega.
-  - destruct Hs. inversion H. simpl in *. apply IHn. omega.
+  - unfold skipn. simpl. zify;lia.
+  - destruct Hs. inversion H. simpl in *. apply IHn. lia.
 Qed.
 
 (* Closed heaps *)

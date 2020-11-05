@@ -112,9 +112,6 @@ Proof.
   - pose (red_delay t (heap_cons hl l u) hn') as R. rewrite alloc_dom in R by assumption.
     rewrite heap_cons_comm in R by (apply heap_dom_alloc_fresh;auto).
     apply R.
-  - eapply red_fix. rewrite alloc_dom by assumption.
-    rewrite heap_cons_comm by (apply heap_dom_alloc_fresh;auto).
-    apply IHR; auto using heap_dom_cons.
 Qed.
 
 Lemma tl_str_heapseq vs : heapseq_le (str_heapseq (tl vs)) (tl (str_heapseq vs)).

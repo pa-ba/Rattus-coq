@@ -1,7 +1,7 @@
 From Rattus Require Export Typing ClosedTerms.
 From Rattus Require Import Tactics.
 
-From Coq Require Import Omega Program.
+From Coq Require Import Lia Omega Program.
 
 
 
@@ -34,6 +34,8 @@ Fixpoint sub_skip (n : nat) (g : sub) : sub :=
             end
   end.
 
+
+Import ListNotations.
 
 Inductive wf_sub : forall {ty : ctype}, ctx ty -> sub -> Prop :=
 | wf_sub_empty : wf_sub ctx_empty []
@@ -151,7 +153,7 @@ Proof.
   intros. generalize dependent i. generalize dependent g. 
   induction s;intros.
   - auto.
-  - assert (exists j, i = S j /\ j >= s) as P by (exists (pred i); zify;omega).
+  - assert (exists j, i = S j /\ j >= s) as P by (exists (pred i); zify;lia).
     autodest. destruct g;auto. destruct o;simpl; repeat rewrite sub_lookup_succ; eauto.
 Qed.
 
@@ -163,7 +165,7 @@ Proof.
   induction s;intros.
   - inversion H.
   - destruct g; simpl; destruct i;auto.
-    rewrite sub_lookup_succ. apply IHs. omega.
+    rewrite sub_lookup_succ. apply IHs. lia.
 Qed.
 
 
@@ -204,8 +206,8 @@ Proof.
   intros SV. generalize dependent g.
   induction SV;intros;
     try solve[simpl; try first [rewrite IHSV1, IHSV2|rewrite IHSV] ; reflexivity].
-  - simpl. repeat rewrite sub_lookup_skip_above by omega. auto.
-  - simpl. repeat rewrite sub_lookup_skip_below by omega. auto.
+  - simpl. repeat rewrite sub_lookup_skip_above by lia. auto.
+  - simpl. repeat rewrite sub_lookup_skip_below by lia. auto.
   - simpl. pose (IHSV (None :: g)) as IH. simpl in IH. rewrite IH. reflexivity.
   - simpl. pose (IHSV2 (None :: g)) as IH2. simpl in IH2. rewrite IH2. rewrite IHSV1. reflexivity.
   - pose (IHSV2 (None :: g)) as IH2. pose (IHSV3 (None :: g)) as IH3.
@@ -239,15 +241,15 @@ Proof.
   induction G;intros n T s B L SK.
   - inversion L.
   - inversion SK;subst. dependent destruction H.
-    destruct n. inversion L. left. zify;omega.
+    destruct n. inversion L. left. zify;lia.
     inversion L. subst. dependent destruction H.
     eapply IHG with (b := b) (n := n) (s := s) in H3;eauto.
-    destruct H3;omega.
-    right;zify;omega.
+    destruct H3;lia.
+    right;zify;lia.
   - destruct n; inversion L. dependent destruction H.
     inversion SK;subst; dependent destruction H;
     eapply IHG in H2;eauto;
-      destruct H2;zify;omega.
+      destruct H2;zify;lia.
   - inversion L. subst. eapply IHG in H0. apply H0.
     inversion SK. subst. assumption.
 Qed. 
@@ -365,15 +367,15 @@ Proof.
   induction L;intros.
   - dependent destruction GS.
     + right. eexists. cbv. reflexivity.
-    + left. zify;omega.
+    + left. zify;lia.
   - dependent destruction GS. 
     + right. apply IHL in GS. destruct GS.
       inversion H. autodest.
-    + apply IHL in GS. autodest. left. omega.
+    + apply IHL in GS. autodest. left. lia.
   - dependent destruction GS.
     + right. apply IHL in GS. destruct GS.
       inversion H.  autodest.
-    + apply IHL in GS. autodest. left. omega.
+    + apply IHL in GS. autodest. left. lia.
   - dependent destruction GS. apply IHL. assumption.
 Qed.
 
@@ -403,6 +405,7 @@ Proof.
   - constructor. apply IHT;eauto using ground_sub_stabilize_later.
   - constructor. apply IHT1;eauto. apply IHT2;eauto.
   - constructor. apply IHT1;eauto. apply IHT2;eauto. apply IHT3;eauto.
+  - constructor. apply IHT;eauto using ground_sub_stabilize_later.
   - constructor. apply IHT;eauto using ground_sub_stabilize.
 Qed.
 

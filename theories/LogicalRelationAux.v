@@ -5,7 +5,7 @@ From Rattus Require Export LogicalRelation.
 
 From Rattus Require Import Tactics.
 
-From Coq Require Import Program.Equality Omega.
+From Coq Require Import Program.Equality Omega Lia.
 From Equations Require Import Equations.
 
 Lemma vrel_gc nu A : forall Hs s t, vrel nu A Hs s t -> vrel nu A Hs (gc s) t.
@@ -15,11 +15,11 @@ Proof.
   destruct A; try solve[autorewrite with vrel in *;eauto].
   - simp vrel' in *.  autodest.
     exists x, x0. split. reflexivity. split.
-    + eapply (IH (tsize A1));[simpl; omega|eauto|eauto].
-    + eapply (IH (tsize A2));[simpl; omega|eauto|eauto].
+    + eapply (IH (tsize A1));[simpl; lia|eauto|eauto].
+    + eapply (IH (tsize A2));[simpl; lia|eauto|eauto].
   - rewrite vrel_plus in *. autodest.
-    + left. exists x. split. reflexivity. eapply (IH (tsize A1));[simpl; omega|eauto|eauto].
-    + right. exists x. split. reflexivity. eapply (IH (tsize A2));[simpl; omega|eauto|eauto].
+    + left. exists x. split. reflexivity. eapply (IH (tsize A1));[simpl; lia|eauto|eauto].
+    + right. exists x. split. reflexivity. eapply (IH (tsize A2));[simpl; lia|eauto|eauto].
   - rewrite vrel_arrow in *. autodest. exists x. split. reflexivity. intros.
     rewrite gc_idem in *. apply H0;eauto.
   - destruct nu;simp vrel' in *.
@@ -62,20 +62,20 @@ Proof.
   induction (lt_wf N) as [N _ IHN]. intros. destruct A; try solve[autorewrite with vrel in *;eauto].
   - rewrite vrel_times in *. autodest.
     exists x, x0. split. auto. split.
-    + eapply (IHN (tsize A1)); eauto. simpl. omega.
-    + eapply (IHN (tsize A2)); eauto. simpl. omega.
+    + eapply (IHN (tsize A1)); eauto. simpl. lia.
+    + eapply (IHN (tsize A2)); eauto. simpl. lia.
   - rewrite vrel_plus in *. autodest.
-    + left. exists x. split. auto. eapply (IHN (tsize A1)); eauto. simpl. omega.
-    + right. exists x. split. auto. eapply (IHN (tsize A2)); eauto. simpl. omega.
+    + left. exists x. split. auto. eapply (IHN (tsize A1)); eauto. simpl. lia.
+    + right. exists x. split. auto. eapply (IHN (tsize A2)); eauto. simpl. lia.
   - intros. rewrite vrel_arrow in *. autodest.
     exists x. split. auto. intros.
-    apply H3; eauto using heapseq_le_trans, store_le_trans, tick_le_gc. omega.
+    apply H3; eauto using heapseq_le_trans, store_le_trans, tick_le_gc. lia.
   - destruct nu.
     + inversion H1. subst. simp vrel' in *.
     + destruct nu'; simp vrel' in *; autodest. 
       exists x, x0. split. auto. split. eauto using tick_le_mapsto.
-      eapply trel_mono'; try apply H4; unfold vrel_mono_prop. apply IHnu. omega.
-      eauto using heapseq_le_tl. omega.     
+      eapply trel_mono'; try apply H4; unfold vrel_mono_prop. apply IHnu. lia.
+      eauto using heapseq_le_tl. lia.     
       eapply tick_le_store_tick. eassumption.
       eauto using heapseq_le_hd.
 
@@ -111,11 +111,11 @@ Proof.
   destruct A; inversion ST; try solve[autorewrite with vrel in *;eauto].
   - rewrite vrel_times in *. autodest. exists x, x0.
     split. auto. split.
-    + eapply (IH (tsize A1)); simpl; eauto; try omega.
-    + eapply (IH (tsize A2)); simpl; eauto; try omega.
+    + eapply (IH (tsize A1)); simpl; eauto; try lia.
+    + eapply (IH (tsize A2)); simpl; eauto; try lia.
   - rewrite vrel_plus in *. autodest.
-    + left. exists x. split. auto. eapply (IH (tsize A1)); simpl; eauto; try omega.
-    + right. exists x. split. auto. eapply (IH (tsize A2)); simpl; eauto; try omega.
+    + left. exists x. split. auto. eapply (IH (tsize A1)); simpl; eauto; try lia.
+    + right. exists x. split. auto. eapply (IH (tsize A2)); simpl; eauto; try lia.
 Qed.
 
 Lemma vrel_trel nu A Hs s t : vrel nu A Hs s t -> trel nu A Hs s t.
@@ -220,7 +220,7 @@ Proof.
   generalize dependent nu'.
   induction C;intros;eauto using vrel_mono.
   - inversion T; subst. inversion H. subst. inversion CS. subst.
-    constructor. eapply IHC;eauto. omega.
+    constructor. eapply IHC;eauto. lia.
 Qed.
 
 

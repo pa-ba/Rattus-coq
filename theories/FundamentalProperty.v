@@ -195,6 +195,29 @@ Proof.
       simpl. eapply trel_mono; try apply C;
       eauto using heap_fresh_alloc,heap_cons_mono.
 
+  - (* delay (ticked) *)
+    simpl. rewrite <- sub_skipc_id with (G:=ctx_tick (stabilize_later G)) (T:=T) by auto.
+    simpl. unfold trel. intros s' TL Cs'.
+    
+    apply crel_mono with (Hs':=cons (hd Hs) (tl Hs)) (s':=s') (nu' := nu) in C;
+      auto using closed_heapseq_tail, closed_heapseq_head, closed_heapseq_cons.
+    destruct s' as (h&h'). 
+    eexists. eexists. simpl. split.
+    apply red_delay; eauto.
+    destruct nu.
+    + rewrite vrel_delay_nil. eauto.
+    + rewrite vrel_delay. eexists. eexists. split. reflexivity.
+      split. apply store_mapsto_cons.
+      apply crel_stabilize_later in C;eauto using heapseq_cons_closed, closed_heapseq_tail.
+
+      (* intros. *)
+      
+      apply crel_gc in C;try solve[intro CO;inversion CO].
+
+      apply crel_tick in C.
+      apply IHT in C;eauto using closed_heapseq_tail, closed_heapseq_head, closed_store_now, sub_skipc_closed.
+      simpl. eapply trel_mono; try apply C;
+      eauto using heap_fresh_alloc,heap_cons_mono.
   - (* adv *)
     (* assert (exists hn hl : heap, s = (Some hn, hl)) as S by eauto using crel_later. *)
     (* destruct S as (hn&hl&S). subst. *)
@@ -275,31 +298,43 @@ Proof.
     generalize dependent s. generalize dependent Hs.
     induction (lt_wf nu) as [nu _ IH]. intros.
 
-    intros s' TL Cs'. destruct s' as (hn&hl).     remember (alloc_fresh hl) as l.
-    assert (forall Hs', closed_heapseq Hs' -> vrel nu (Delay T) Hs' (hn, heap_cons hl l (fixp (sub_app (None :: g) t))) (ref l)) as DE. intros Hs' CHs'.
+    intros s' TL Cs'. 
+
+    assert (forall Hs', closed_heapseq Hs' ->
+                        vrel nu (Box (Delay T)) Hs' s' (box (delay (fixp (sub_app (None :: g) t))))) as DE.
+    
+    intros Hs' CHs'. autorewrite with vrel.
+    exists (delay (fixp (sub_app (None :: g) t))).
+    split. reflexivity.
+    intros Hs'' Chs'' s'' Cs''.
+    destruct s'' as (hn&hl).
+    remember (alloc_fresh hl) as l.
+    exists (ref l). subst. eexists. split. apply red_delay.
     destruct nu.
     + rewrite vrel_delay_nil. eauto.
     + rewrite vrel_delay. eexists. eexists.
-      split. auto. split. auto using store_mapsto_cons.
+      split. auto. split. eauto using store_mapsto_cons.
       apply IH;eauto using closed_heapseq_tail,crel_mono, C'. 
       simpl. eauto using closed_store_now, closed_heap_alloc, closed_heapseq_head.
-    + 
+    +
 
-
-      assert (exists v s'', {sub_app (Some (ref (alloc_fresh hl))::(sub_skipc (stabilize G) g)) t ,
-  (hn, heap_cons hl (alloc_fresh hl) (fixp (sub_app (None :: (sub_skipc (stabilize G) g)) t)))}⇓ {
-                                                                                                 v, s''} /\  vrel nu T Hs s'' v). eapply IHT.
-      constructor. rewrite <- Heql. eapply DE. eauto using closed_heapseq_tail.
+      assert (exists v s'', {sub_app
+     (Some (box (delay (fixp (sub_app (None :: sub_skipc (stabilize G) g) t))))
+      :: sub_skipc (stabilize G) g) t, s'}⇓ {v, s''}  /\  vrel nu T Hs s'' v). eapply IHT;eauto.
+      constructor. erewrite <- sub_skipc_id in DE;eauto. eapply DE. eauto using closed_heapseq_tail.
       eapply C';eauto using closed_heapseq_tail, closed_store_cons.
       eauto using sub_skipc_closed. eauto using closed_heapseq_tail.
       eauto using closed_store_cons. subst.
-      erewrite <- sub_skipc_id with (G := ctx_var (stabilize G) (Delay T));eauto.
-      erewrite <- sub_skipc_id with (G := ctx_var (stabilize G) (Delay T)) in CF;
-        eauto using closed_store_cons.
+      (* erewrite <- sub_skipc_id;eauto. *)
+      erewrite <- sub_skipc_id in CF;
+        eauto using closed_store_cons. simpl in *.
+      eauto using sub_skipc_closed.
+      
+      destruct H as (v & s'' & R & V).
 
-      destruct H as (v & s'' & R & V). eexists. eexists. split.
-      apply red_fix. erewrite <- sub_skipc_id  with (G := ctx_var (stabilize G) (Delay T));eauto.
-      simpl. rewrite sub_term_merge. eassumption. eauto using sub_skipc_closed. assumption.
+      eexists. eexists. split. apply red_fix.
+      erewrite <- sub_skipc_id  with (G := ctx_var (stabilize G) (Box (Delay T)));eauto.
+      simpl. rewrite sub_term_merge. simpl. eassumption. eauto using sub_skipc_closed. assumption.
   - (* into *)
     unfold trel in *. intros s' TL Cs'.
     apply crel_mono with (Hs':=Hs) (s':=s') (nu' := nu) in C;auto.

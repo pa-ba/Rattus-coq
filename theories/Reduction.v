@@ -61,10 +61,9 @@ Inductive red : term -> store -> term -> store -> Prop :=
     {t,s} ⇓ {box t',s'} ->
     {t', s'} ⇓ {v,s''} ->
     {unbox t,s} ⇓ {v,s''}
-| red_fix t v h h' s :
-    {sub_term t (ref (alloc_fresh h)),
-     (h', heap_cons h (alloc_fresh h) (fixp t))} ⇓ {v,s} ->
-    {fixp  t, (h', h)} ⇓ {v,s}
+| red_fix t v s s' :
+    {sub_term t (box (delay (fixp t))), s} ⇓ {v,s'} ->
+    {fixp  t, s} ⇓ {v,s'}
 | red_into       : forall h h' t v,
     {t,h} ⇓ {v,h'} ->
     {into t,h} ⇓ {into v,h'}
@@ -83,8 +82,6 @@ Proof.
   - destruct h'; constructor; eauto using heap_cons_mono,heap_fresh_alloc.
   - inversion IHR1. subst. inversion IHR2. subst.
     eauto using heap_le_trans.
-  - inversion IHR; subst; constructor;
-    eauto using heap_cons_mono, heap_le_trans,heap_fresh_alloc.
 Qed. 
 
 

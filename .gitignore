@@ -3,3 +3,5 @@
 *.glob
 *.vok
 *.vos
+.lia.cache
+.Makefile.d

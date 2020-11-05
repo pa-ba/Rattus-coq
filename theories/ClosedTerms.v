@@ -1,4 +1,4 @@
-From Coq Require Import Omega Program.
+From Coq Require Import Lia Omega Program.
 
 From Rattus Require Export Substitutions.
 From Rattus Require Import Tactics.
@@ -58,7 +58,7 @@ Lemma fvar_var_id i : forall b g, fvar_sub_none b g -> i < b -> sub_lookup g i =
 Proof.
   induction i;intros.
   - inversion H;subst. inversion H0. auto.
-  - simpl. inversion H. subst. inversion H0. eapply IHi. eassumption. omega.
+  - simpl. inversion H. subst. inversion H0. eapply IHi. eassumption. lia.
 Qed.
 
 
@@ -168,11 +168,11 @@ Qed.
 Lemma fvars_up i j t : i <= j -> fvars i t -> fvars j t.
 Proof.
   intros I F. generalize dependent j. induction F;intros j;eauto.
-  - constructor. omega.
-  - constructor. apply IHF. omega.
-  - constructor. apply IHF1. omega. apply IHF2. omega.
-  - constructor. apply IHF1. omega. apply IHF2. omega. apply IHF3. omega.
-  - constructor. apply IHF. omega.
+  - constructor. lia.
+  - constructor. apply IHF. lia.
+  - constructor. apply IHF1. lia. apply IHF2. lia.
+  - constructor. apply IHF1. lia. apply IHF2. lia. apply IHF3. lia.
+  - constructor. apply IHF. lia.
 Qed.
 
 
@@ -180,7 +180,7 @@ Qed.
 Lemma closed_fvars i t : closed_term t -> fvars i t.
 Proof.
   intros C. eapply fvars_up in C.
-  eassumption. omega.
+  eassumption. lia.
 Qed.
 
 
@@ -232,14 +232,14 @@ Lemma full_sub_nth s i l g :
   full_sub l s g -> i < l \/ l + s <= i  \/ exists t, sub_lookup g i = Some t.
 Proof.
   intros F. generalize dependent i. induction F;intros.
-  - right. left. omega.
+  - right. left. lia.
   - destruct i.
     + right. right. exists t. cbv. reflexivity.
     + pose (IHF i). autodest. inversion H.
-      right. left. omega.
+      right. left. lia.
   - destruct i.
-    + left. omega.
-    + pose (IHF i). autodest. left. omega. right. left. omega.
+    + left. lia.
+    + pose (IHF i). autodest. left. lia. right. left. lia.
 Qed.
 
 
@@ -248,7 +248,7 @@ Proof.
   intros C B F. generalize dependent g.
   induction B;intros;simpl;eauto 10.
   - apply full_sub_nth with (i := i) in F.
-    destruct F as [F | [F|(t & F)]];try omega.
+    destruct F as [F | [F|(t & F)]];try lia.
     rewrite F. eauto using sub_lookup_closed, closed_fvars.
   - remember (sub_lookup g i) as N. destruct N.
     eauto using sub_lookup_closed, closed_fvars. eauto.
@@ -265,12 +265,12 @@ Lemma fvars_bvars' l s t b : b = l + s -> fvars b t -> bvars l s l t.
 Proof.
   intros E F. generalize dependent l. induction F;intros;eauto.
   - pose (dec_le l i) as L. destruct L.
-    + apply bvars_var_between. omega.
-    + apply bvars_var_below. omega.
-  - constructor. apply IHF. omega.
-  - constructor. apply IHF1. auto. apply IHF2. omega. 
-  - constructor. apply IHF1. auto. apply IHF2. omega. apply IHF3. omega.
-  - constructor. apply IHF. omega.
+    + apply bvars_var_between. lia.
+    + apply bvars_var_below. lia.
+  - constructor. apply IHF. lia.
+  - constructor. apply IHF1. auto. apply IHF2. lia. 
+  - constructor. apply IHF1. auto. apply IHF2. lia. apply IHF3. lia.
+  - constructor. apply IHF. lia.
 Qed.
 
 

@@ -2,7 +2,7 @@ From Rattus Require Export Reduction.
 
 From Rattus Require Import Tactics.
 
-From Coq Require Import Arith Omega Program.
+From Coq Require Import Arith Lia Program.
 From Equations Require Import Equations.
 
 Fixpoint tsize (A : type) : nat :=
@@ -59,34 +59,34 @@ vrel _ _ _ _ _ := False
 .
 
 Next Obligation.
-  apply Subterm.right_lex. omega.
+  apply Subterm.right_lex. lia.
 Qed. 
 Next Obligation.
-  apply Subterm.right_lex. omega.
+  apply Subterm.right_lex. lia.
 Qed.
 Next Obligation.
-  apply Subterm.right_lex. omega.
+  apply Subterm.right_lex. lia.
 Qed.
 Next Obligation.
-  apply Subterm.right_lex. omega.
-Qed.
-Next Obligation.
-  destruct d.
-  + rewrite Nat.sub_0_r. apply Subterm.right_lex. omega.
-  + destruct nu.
-  - apply Subterm.right_lex. omega.
-  - apply Subterm.left_lex. omega.
+  apply Subterm.right_lex. lia.
 Qed.
 Next Obligation.
   destruct d.
-  + rewrite Nat.sub_0_r. apply Subterm.right_lex. omega.
+  + rewrite Nat.sub_0_r. apply Subterm.right_lex. lia.
   + destruct nu.
-  - apply Subterm.right_lex. omega.
-  - apply Subterm.left_lex. omega.
+  - apply Subterm.right_lex. lia.
+  - apply Subterm.left_lex. lia.
+Qed.
+Next Obligation.
+  destruct d.
+  + rewrite Nat.sub_0_r. apply Subterm.right_lex. lia.
+  + destruct nu.
+  - apply Subterm.right_lex. lia.
+  - apply Subterm.left_lex. lia.
 Qed.
 
 Next Obligation.
-  rewrite tsize_subst. apply Subterm.right_lex. omega.
+  rewrite tsize_subst. apply Subterm.right_lex. lia.
 Qed.
 
   
@@ -107,14 +107,14 @@ Lemma vrel_arrow A B nu Hs s t :
 Proof.
   simp vrel. split;intros.
   - autodest. exists x. split. reflexivity. intros.
-    assert (nu - nu' <= nu) as D by omega.
-    assert (nu - (nu - nu') = nu') as N by omega. rewrite <- N in H5.
+    assert (nu - nu' <= nu) as D by lia.
+    assert (nu - (nu - nu') = nu') as N by lia. rewrite <- N in H5.
     unfold trel. intros.
     remember (H0 (nu - nu') D Hs' s' H1 H2 H3 H4 v H5 H6 s'0 H7 H8) as As.
     clear HeqAs. autodest. exists x0. exists x1. subst. rewrite N in *. eauto.
   - autodest. exists x. split. reflexivity. intros.
-    assert (nu - d <= nu) as D by omega.
-    assert (nu - (nu - d) = d) as N by omega. 
+    assert (nu - d <= nu) as D by lia.
+    assert (nu - (nu - d) = d) as N by lia. 
     unfold trel. intros.
     remember (H0 (nu - d) Hs' s' D H1 H2 H3 H4 v H5 H6 s'' H7 H8) as As.
     clear HeqAs. autodest.
@@ -152,12 +152,12 @@ Proof.
   induction (lt_wf N) as [N _ IH]. intro A.
   destruct A;intros; simp vrel in *; subst; autodest.
   - constructor.
-    + eapply IH in H0;eauto. simpl. omega.
-    + eapply IH in H1;eauto. simpl. omega.
-  - constructor. eapply IH in H0;eauto. simpl. omega.
-  - constructor. eapply IH in H0;eauto. simpl. omega.
+    + eapply IH in H0;eauto. simpl. lia.
+    + eapply IH in H1;eauto. simpl. lia.
+  - constructor. eapply IH in H0;eauto. simpl. lia.
+  - constructor. eapply IH in H0;eauto. simpl. lia.
   - destruct nu; simp vrel in *; autodest.
-  - constructor. eapply IH in H0;eauto. simpl. rewrite tsize_subst. omega.
+  - constructor. eapply IH in H0;eauto. simpl. rewrite tsize_subst. lia.
 Qed.  
       
 

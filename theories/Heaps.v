@@ -2,7 +2,7 @@
 library. *)
 
 From stdpp Require Import gmap fin_maps fin_sets.
-From Coq Require Import Omega.
+From Coq Require Import Lia.
 
 From Rattus Require Import RawSyntax.
 
@@ -46,8 +46,8 @@ Proof.
     + intros I E. subst. apply I. apply Es. auto.
   - apply not_elem_of_empty in H. contradiction.
   - rewrite elem_of_union in H1. destruct H1.
-    + apply elem_of_singleton_1 in H1. subst. zify;omega.
-    + apply H0 in H1. zify;omega.
+    + apply elem_of_singleton_1 in H1. subst. zify;lia.
+    + apply H0 in H1. zify;lia.
   - subst. eauto.
 Qed.
 
@@ -57,7 +57,7 @@ Proof.
 
   assert (alloc_fresh h ∈ heap_dom_set h).
   eapply elem_of_dom_2. eassumption.
-  apply alloc_fresh_max in H0. omega.
+  apply alloc_fresh_max in H0. lia.
 Qed.
   
 Lemma heap_mapsto_determ l t t' h : heap_mapsto l t h -> heap_mapsto l t' h -> t = t'.
