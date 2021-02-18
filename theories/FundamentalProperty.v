@@ -1,5 +1,6 @@
-(** This module proves the fundamental property of the logical
-relation defined in the [LogicalRelation] module. *)
+(** This module proves the fundamental property (Theorem 5.1 in the
+paper) of the logical relation defined in the [LogicalRelation]
+module. *)
 
 From Rattus Require Import Tactics.
 

@@ -1,4 +1,4 @@
-(** This module proves Theorem 4.2 from the paper. *)
+(** This module proves Theorem 4.3 from the paper. *)
 
 From Coq Require Import Program.Equality Omega.
 From Rattus Require Export Streams FundamentalProperty.

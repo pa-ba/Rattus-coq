@@ -1,4 +1,4 @@
-(** This module proves Theorem 4.1 from the paper. *)
+(** This module proves Theorem 4.2 from the paper. *)
 
 From Rattus Require Export Streams FundamentalProperty Tactics.
 

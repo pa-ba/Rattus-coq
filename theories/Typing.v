@@ -1,4 +1,5 @@
-(** This module defines the type system of Simply RaTT. *)
+(** This module defines the single-tick type system of the Rattus core
+calculus 𝜆✓. *)
 
 From Rattus Require Export Substitutions.
 

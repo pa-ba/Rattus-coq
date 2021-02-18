@@ -1,5 +1,5 @@
 (** This module defines the syntax of terms, values, and types in
-Simply RaTT *)
+Rattus. *)
 
 
 From Coq Require Export Nat.

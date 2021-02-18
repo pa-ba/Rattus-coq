@@ -1,4 +1,5 @@
-(* This module defines the big-step operational semantics. *)
+(* This module defines the big-step operational semantics (cf. Figure
+5 in the paper). *)
 
 From Rattus Require Export TypingClosed Worlds.
 

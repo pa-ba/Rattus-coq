@@ -1,6 +1,6 @@
 (** This module defines the operational semantics for streams and
-stream transducers. In addition, we provide lemmas that are used to
-prove productivity and causality. *)
+stream transducers (cf. Figure 6 in the paper). In addition, we
+provide lemmas that are used to prove productivity and causality. *)
 
 
 From Coq Require Import Omega Program.Equality.

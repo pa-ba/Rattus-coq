@@ -13,15 +13,15 @@ The main results are presented in the following three files:
 
 - [FundamentalProperty.v](theories/FundamentalProperty.v) proves
   Theorem 5.1, the fundamental property of the logical relation.
-- [Productivity.v](theories/Productivity.v) proves Theorem 4.1, i.e.
+- [Productivity.v](theories/Productivity.v) proves Theorem 4.2, i.e.
   the stream semantics is safe.
-- [Causality.v](theories/Causality.v) proves Theorem 4.2, i.e. the
+- [Causality.v](theories/Causality.v) proves Theorem 4.3, i.e. the
   stream transducer semantics is safe.
 
 ## Language definition
 
-The following files define the Simply RaTT calculus (and prove some
-auxiliary lemmas).
+The following files define 𝜆✓ (the single-tick core calculus of
+Rattus) and prove some auxiliary lemmas.
 
 - [RawSyntax.v](theories/RawSyntax.v) defines the syntax of the
   calculus.
@@ -52,7 +52,7 @@ auxiliary lemmas).
 - [TypingClosed.v](theories/TypingClosed.v) a well-typed term is
   turned into a closed term by a suitable substitution.
 - [Examples.v](theories/Examples.v) typechecks some example terms in
-  the Simply RaTT calculus.
+  the calculus.
 - [Tactics.v](theories/Tactics.v) defines tactics that are used in the
   proofs.
   

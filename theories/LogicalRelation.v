@@ -1,3 +1,6 @@
+(** This module defines the logical relation (cf. Figure 7 in the
+paper). *)
+
 From Rattus Require Export Reduction.
 
 From Rattus Require Import Tactics.
