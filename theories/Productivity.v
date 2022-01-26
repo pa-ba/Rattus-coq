@@ -81,7 +81,7 @@ Inductive Sred' (A : type) : nat -> state -> Prop :=
     Sred' A n nextState' -> Sred' A (S n) s
 | doneSred' s : Sred' A 0 s.
 
-Hint Constructors Sred' : core.
+#[global] Hint Constructors Sred' : core.
 
 Lemma sred_determ s v1 v2 s1 s2 : sred s v1 s1 -> sred s v2 s2 -> v1 = v2 /\ s1 = s2.
 Proof.

@@ -71,7 +71,7 @@ Inductive stable : type -> Prop :=
 | S_Box : forall T,
     stable (Box T).
 
-Hint Constructors stable : core.
+#[global] Hint Constructors stable : core.
 
 Fixpoint stableb (t : type) : bool :=
   match t with
@@ -216,6 +216,6 @@ Inductive hastype : forall {ty}, ctx ty -> term -> type -> Prop :=
  where "G '⊢' e '∶' T" := (hastype G e T) : type_scope.
 
 
-Hint Constructors ctx_lookup hastype wf_type : core.
+#[global] Hint Constructors ctx_lookup hastype wf_type : core.
 
-Hint Unfold closed_type : core.
+#[global] Hint Unfold closed_type : core.

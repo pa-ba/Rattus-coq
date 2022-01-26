@@ -72,7 +72,7 @@ Inductive sub_empty : sub -> Prop :=
 | sub_empty_nil : sub_empty nil
 | sub_empty_cons g : sub_empty g -> sub_empty (None :: g).
 
-Hint Constructors sub_empty : core.
+#[global] Hint Constructors sub_empty : core.
 
 
 Lemma sub_empty_app t g : sub_empty g -> sub_app g t = t.

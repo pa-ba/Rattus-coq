@@ -127,7 +127,7 @@ Inductive Tred' (A : type) (vs : nat -> term) :  nat -> state -> Prop :=
     Tred' A (tl vs) n nextState' -> Tred' A vs (S n) s
 | doneSred' s : Tred' A vs 0 s.
 
-Hint Constructors Tred' : core.
+#[global] Hint Constructors Tred' : core.
 
 Lemma tred_determ s v v1 v2 s1 s2 : tred s v v1 s1 -> tred s v v2 s2 -> v1 = v2 /\ s1 = s2.
 Proof.

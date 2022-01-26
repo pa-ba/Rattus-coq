@@ -74,7 +74,7 @@ Inductive red : term -> store -> term -> store -> Prop :=
 where  " '{' t ',' h '}' '⇓' '{' t' ','  h' '}' " := (red t h t' h').
 
 
-Hint Constructors red : core.
+#[global] Hint Constructors red : core.
 
   
 Lemma red_extensive t t' h h' : red t h t' h' -> store_le h h'.

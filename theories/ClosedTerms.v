@@ -42,7 +42,7 @@ Inductive fvars : index -> term -> Prop :=
 | fvars_out b t : fvars b t -> fvars b (out t)
 | fvars_fixp b t : fvars (S b) t -> fvars b (fixp t).
 
-Hint Constructors fvars : core.
+#[global] Hint Constructors fvars : core.
 
 Notation closed_term := (fvars 0).
 
@@ -50,7 +50,7 @@ Inductive fvar_sub_none : index -> sub -> Prop :=
 | fvar_sub_none_0 g : fvar_sub_none 0 g
 | fvar_sub_none_succ i g : fvar_sub_none i g -> fvar_sub_none (S i) (None :: g).
 
-Hint Constructors fvar_sub_none : core.
+#[global] Hint Constructors fvar_sub_none : core.
 
   
 
@@ -96,7 +96,7 @@ Inductive merge_sub : sub -> sub -> sub -> Prop :=
 | merge_sub_left g g1 g2 t :  merge_sub g1 g2 g -> merge_sub (Some t :: g1) (None :: g2) (Some t :: g)
 | merge_sub_right g g1 g2 t : merge_sub g1 g2 g -> merge_sub (None :: g1) (Some t :: g2) (Some t :: g).
 
-Hint Constructors merge_sub closed_sub : core.
+#[global] Hint Constructors merge_sub closed_sub : core.
 
 Lemma closed_sub_term t g : closed_sub (Some t :: g) -> closed_term t.
 Proof.
@@ -225,7 +225,7 @@ Inductive bvars : index -> index -> index -> term -> Prop :=
 | bvars_out l s b t : bvars l s b t -> bvars l s b (out t)
 | bvars_fixp l s b t : bvars (S l) s (S b) t -> bvars l s b (fixp t).
 
-Hint Constructors full_sub bvars : core.
+#[global] Hint Constructors full_sub bvars : core.
 
 
 Lemma full_sub_nth s i l g :

@@ -79,7 +79,7 @@ Inductive sub_sub : forall {ty : ctype}, sub -> ctx ty -> sub -> Prop :=
     sub_sub g G g' -> sub_sub (t :: g) (ctx_skip G) (t :: g')
 | sub_sub_tick G g g' : sub_sub g G g' -> sub_sub g (ctx_tick G) g'.
 
-Hint Constructors sub_sub wf_sub skipped_sub skipped_ctx : core.
+#[global] Hint Constructors sub_sub wf_sub skipped_sub skipped_ctx : core.
 
 Lemma wf_sub_skip_later G g : wf_sub G g ->  wf_sub (skip_later G) g.
 Proof.
@@ -196,7 +196,7 @@ Inductive svars (s : index) : index -> term -> Prop :=
 | svars_out b t : svars s b t -> svars s b (out t)
 | svars_fixp b t : svars s (S b) t -> svars s b (fixp t).
 
-Hint Constructors svars : core.
+#[global] Hint Constructors svars : core.
 
 
 Lemma sub_skips_id' b s g t :
@@ -232,7 +232,7 @@ Inductive ctx_skips : forall {ty}, index -> index -> ctx ty -> Prop :=
 | ctx_skips_tick G s b : ctx_skips s b G -> ctx_skips s b (ctx_tick G).
 
 
-Hint Constructors ctx_skips : core.
+#[global] Hint Constructors ctx_skips : core.
 
 
 Lemma ctx_lookup_skips ty (G : ctx ty) : forall n T s b,
@@ -345,7 +345,7 @@ Inductive ground_sub : forall {ty}, index -> sub -> ctx ty -> Prop :=
     ground_sub i g G -> ground_sub i g (ctx_tick G)
 .
 
-Hint Constructors ground_sub : core.
+#[global] Hint Constructors ground_sub : core.
 
 Lemma ground_sub_later b g G : ground_sub b g G -> ground_sub b g (skip_later G).
 Proof.
@@ -358,7 +358,7 @@ Qed.
 (*   intros Gr. dependent induction Gr;simpl;auto. *)
 (* Qed. *)
 
-Hint Resolve ground_sub_later : core.
+#[global] Hint Resolve ground_sub_later : core.
 
 Lemma ground_sub_nth ty b g (G : ctx ty) i T :
   ctx_lookup G i T -> ground_sub b g G -> i < b \/ exists t, sub_lookup g i = Some t.

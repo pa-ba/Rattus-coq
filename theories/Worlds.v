@@ -27,7 +27,7 @@ Definition store_tick (s : store) (h : heap) : store :=
 Inductive store_mapsto : loc -> term -> store -> Prop :=
 | store_mapsto_heap l t h h' : heap_mapsto l t h -> store_mapsto l t (h', h).
 
-Hint Constructors store_mapsto : core.
+#[global] Hint Constructors store_mapsto : core.
 
 (* freshness for heaps *)
     
@@ -46,7 +46,7 @@ Inductive tick_le : store -> store -> Prop :=
 | tick_le_tick h1 h2 h2' : heap_le h2 h2' ->
                            tick_le (None, h2) (Some h1, h2').
 
-Hint Constructors store_le tick_le : core.
+#[global] Hint Constructors store_le tick_le : core.
 
 
 Definition heapseq := nat -> heap.
@@ -202,7 +202,7 @@ Qed.
 
 
 
-Hint Resolve tick_le_refl store_le_refl heap_le_refl heapseq_le_refl : core.
+#[global] Hint Resolve tick_le_refl store_le_refl heap_le_refl heapseq_le_refl : core.
 
 
 Lemma tick_le_gc': forall s : store, tick_le (gc s) s.
@@ -225,7 +225,7 @@ Proof.
   apply heap_empty_fresh in C. contradiction.
 Qed.
 
-Hint Resolve heap_le_empty : core.
+#[global] Hint Resolve heap_le_empty : core.
 
 Lemma tick_le_empty s : tick_le (None, heap_empty) s.
 Proof.
@@ -323,7 +323,7 @@ Proof.
 Qed.
 
 
-Hint Constructors closed_store : core.
+#[global] Hint Constructors closed_store : core.
 
 Lemma closed_store_gc s: closed_store s -> closed_store (gc s).
 Proof.
@@ -336,7 +336,7 @@ Proof.
   apply heap_empty_fresh in C. contradiction.
 Qed. 
 
-Hint Resolve closed_heap_empty : core.
+#[global] Hint Resolve closed_heap_empty : core.
 
 Lemma closed_heapseq_tail hs : closed_heapseq hs -> closed_heapseq (tl hs).
 Proof.

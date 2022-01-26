@@ -154,6 +154,6 @@ Qed.
 
 Lemma heap_cons_delete' h l t : heap_cons (heap_delete h l) l t = heap_cons h l t.
 Proof.
-  unfold heap_delete, heap_cons. apply insert_delete.
+  unfold heap_delete, heap_cons. apply insert_delete_insert.
 Qed.
 

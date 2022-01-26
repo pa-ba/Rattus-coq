@@ -67,4 +67,4 @@ Inductive isvalue : term -> Prop :=
 | value_in1 v: isvalue v -> isvalue (in1 v)
 | value_in2 v: isvalue v -> isvalue (in2 v).
                        
-Hint Constructors isvalue : core.
+#[global] Hint Constructors isvalue : core.

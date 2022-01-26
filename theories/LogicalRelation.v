@@ -224,4 +224,4 @@ Inductive crel : forall {ty}, nat -> ctx ty -> heapseq -> store -> sub -> Prop :
     crel nu (ctx_tick G) Hs (Some hn, h) g
 .
 
-Hint Constructors crel : core.
+#[global] Hint Constructors crel : core.

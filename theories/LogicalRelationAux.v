@@ -137,22 +137,6 @@ Qed.
 (* context relation *)
 
 
-(* Lemma crel_init (G : ctx init) Hs s g : crel G Hs s g -> s = store_bot. *)
-(* Proof. *)
-(*   intros C. dependent induction C;eauto. *)
-(* Qed. *)
-
-(* Lemma crel_now (G : ctx now) Hs s g : crel G Hs s g -> s <> store_bot. *)
-(* Proof. *)
-(*   intros C. dependent induction C;eauto. *)
-(* Qed. *)
-
-(* Lemma crel_now' (G : ctx now) Hs s g : crel G Hs s g ->  *)
-(*                                    exists hn hl, s = store_lock hn hl. *)
-(* Proof. *)
-(*   intros C. apply crel_now in C. destruct s; eauto. contradiction. *)
-(* Qed. *)
-
 Lemma crel_later (G : ctx later) nu Hs s g : crel nu G Hs s g ->
                                    exists hn hl, s = (Some hn, hl).
 Proof.
@@ -166,13 +150,6 @@ Proof.
   - simpl. eauto using vrel_gc.
   - auto.
 Qed.
-
-(* Lemma heaps_single_closed h : closed_heap h -> closed_heaps (heaps_single h). *)
-(* Proof. *)
-(*   intro C. intros h' H. inversion H. auto. *)
-(* Qed. *)
-
-(* Hint Resolve heaps_single_closed. *)
 
 Lemma closed_heap_le h1 h2 : heap_le h2 h1 -> closed_heap h1 -> closed_heap h2.
 Proof.
@@ -208,8 +185,7 @@ Proof.
   intros HL SL n. destruct n;eauto. 
 Qed.
 
-
-Hint Resolve heapseq_cons_tl_le  heapseq_cons_tl_le' heapseq_cons_le heapseq_cons_closed : core.
+#[global] Hint Resolve heapseq_cons_tl_le  heapseq_cons_tl_le' heapseq_cons_le heapseq_cons_closed : core.
   
 Lemma crel_mono ty (G : ctx ty) nu nu' Hs Hs' s s' g :
   nu' <= nu ->
@@ -222,15 +198,6 @@ Proof.
   - inversion T; subst. inversion H. subst. inversion CS. subst.
     constructor. eapply IHC;eauto. lia.
 Qed.
-
-
-(* Lemma crel_tick' nu G Hs Hs' g hn hn' : *)
-(*   crel nu G Hs (None, hn) g -> *)
-(*   heap_le hn' (hd Hs) -> heapseq_le Hs' (tl Hs) -> *)
-(*   crel (S nu) (ctx_tick G) Hs' (Some hn, hn') g. *)
-(* Proof. *)
-(*   intros HL SL C. eapply crel_mono with (nu' := S nu);eauto. *)
-(* Qed. *)
 
 
 Lemma crel_skip_later nu g hn hl G Hs :

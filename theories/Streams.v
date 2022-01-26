@@ -48,7 +48,7 @@ Proof.
   intros n. auto.
 Qed. 
 
-Hint Resolve empty_heaps_closed : core.
+#[global] Hint Resolve empty_heaps_closed : core.
 
 Definition thel : loc := 0.
 
